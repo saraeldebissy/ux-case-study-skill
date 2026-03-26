@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UTurn Checkout — Case Study · Sara Khalil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg:           #FAF8F4;
+      --surface:      #F0EDE6;
+      --border:       #DDD9D0;
+      --text:         #1A1714;
+      --text-muted:   #6B6560;
+      --accent:       #8B3A2A;
+      --accent-soft:  #F6EBE8;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'Figtree', system-ui, sans-serif;
+      --max-w:        720px;
+      --max-w-wide:   1060px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 1.0625rem;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* NAV */
+    .cs-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.625rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cs-nav__back {
+      font-size: 0.8125rem; color: var(--text-muted);
+      display: flex; align-items: center; gap: 0.4rem;
+      transition: color 0.15s;
+    }
+    .cs-nav__back:hover { color: var(--text); text-decoration: none; }
+    .cs-nav__back::before { content: '←'; font-size: 1rem; }
+    .cs-nav__title {
+      font-family: var(--font-display); font-size: 1rem; font-weight: 500;
+      color: var(--text); opacity: 0; transition: opacity 0.25s;
+      letter-spacing: 0.01em;
+    }
+    .cs-nav__title.visible { opacity: 1; }
+
+    /* HERO */
+    .cs-hero {
+      max-width: var(--max-w-wide);
+      margin: 0 auto;
+      padding: 7rem 2rem 5rem;
+    }
+    .cs-hero__meta {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .cs-tag {
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase;
+      padding: 0.3rem 0.875rem;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .cs-tag--accent {
+      background: var(--accent-soft);
+      border-color: color-mix(in srgb, var(--accent) 25%, transparent);
+      color: var(--accent);
+    }
+    .cs-hero__title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+      font-weight: 500; line-height: 1.08;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 1.75rem;
+      max-width: 22ch;
+    }
+    .cs-hero__hook {
+      font-size: 1.1875rem; color: var(--text-muted);
+      max-width: 54ch; line-height: 1.65;
+      font-weight: 400;
+    }
+    .cs-hero__image {
+      margin-top: 4rem;
+      width: 100%; aspect-ratio: 16/6.5;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem; color: var(--text-muted);
+    }
+    .cs-hero__image span:first-child { font-size: 1.75rem; opacity: 0.35; }
+    .cs-hero__image span:last-child { font-size: 0.875rem; }
+
+    /* LAYOUT */
+    article { max-width: var(--max-w-wide); margin: 0 auto; padding: 0 2rem; }
+    main {
+      display: grid;
+      grid-template-columns: 1fr min(var(--max-w), 100%) 1fr;
+    }
+    main > * { grid-column: 2; }
+    main > .cs-wide { grid-column: 1 / -1; }
+
+    /* SECTIONS */
+    .cs-section { padding: 4.5rem 0; border-top: 1px solid var(--border); }
+    .cs-section:first-child { border-top: none; }
+    .cs-section__label {
+      font-size: 0.6875rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 0.875rem;
+    }
+    .cs-section__title {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 3.5vw, 2.625rem);
+      font-weight: 500; line-height: 1.18;
+      letter-spacing: -0.01em;
+      color: var(--text); margin-bottom: 1.75rem;
+    }
+    .cs-prose p { margin-bottom: 1.125rem; }
+    .cs-prose p:last-child { margin-bottom: 0; }
+    .cs-prose strong { font-weight: 600; color: var(--text); }
+
+    /* QUOTE */
+    .cs-quote {
+      margin: 2rem 0;
+      padding: 1.5rem 1.5rem 1.5rem calc(1.5rem + 4px);
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 0 8px 8px 0;
+    }
+    .cs-quote p {
+      font-family: var(--font-display);
+      font-size: 1.25rem; line-height: 1.55;
+      color: var(--text); font-style: italic;
+    }
+    .cs-quote cite {
+      display: block; margin-top: 0.75rem;
+      font-size: 0.8125rem; color: var(--text-muted); font-style: normal;
+    }
+
+    /* STATS */
+    .cs-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem; margin: 2rem 0;
+    }
+    .cs-stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.5rem;
+    }
+    .cs-stat__value {
+      font-family: var(--font-display);
+      font-size: 2.75rem; font-weight: 600;
+      color: var(--accent); line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+    .cs-stat__label { font-size: 0.875rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* INSERT */
+    .cs-insert {
+      margin: 2rem 0; width: 100%; min-height: 260px;
+      background: var(--surface); border: 2px dashed var(--border);
+      border-radius: 10px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 0.5rem; padding: 2rem;
+      text-align: center; color: var(--text-muted);
+    }
+    .cs-insert__icon { font-size: 1.75rem; opacity: 0.35; }
+    .cs-insert__label { font-size: 0.9375rem; font-weight: 500; }
+    .cs-insert__hint { font-size: 0.8125rem; opacity: 0.7; }
+    .cs-insert--wide { min-height: 340px; }
+
+    /* VISUAL BLOCK */
+    .cs-visual { margin: 2rem 0; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); background: var(--surface); }
+
+    /* FINDING CALLOUT */
+    .cs-finding {
+      display: flex; gap: 1rem; align-items: flex-start;
+      padding: 1.125rem 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; margin: 0.625rem 0;
+    }
+    .cs-finding__dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+      margin-top: 0.55rem;
+    }
+    .cs-finding__text { font-size: 0.9375rem; line-height: 1.6; }
+
+    /* FOOTER */
+    .cs-footer {
+      max-width: var(--max-w-wide); margin: 6rem auto 0;
+      padding: 3.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .cs-footer__cta {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.75rem 1.625rem;
+      background: var(--accent); color: #fff;
+      border-radius: 8px; font-weight: 600;
+      font-size: 0.9375rem; transition: opacity 0.15s;
+    }
+    .cs-footer__cta:hover { opacity: 0.87; text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .cs-hero { padding-top: 4rem; }
+      .cs-stats { grid-template-columns: 1fr 1fr; }
+      .cs-footer { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="cs-nav">
+  <a href="/" class="cs-nav__back">Portfolio</a>
+  <span class="cs-nav__title">UTurn Checkout Redesign</span>
+</nav>
+
+<article>
+
+  <header class="cs-hero">
+    <div class="cs-hero__meta">
+      <span class="cs-tag cs-tag--accent">Lead UX &amp; CRO</span>
+      <span class="cs-tag">2 Weeks · 2020</span>
+      <span class="cs-tag">Hive Analytics × UTurn</span>
+    </div>
+    <h1 class="cs-hero__title">The Checkout That Was Costing a Fortune — Silently</h1>
+    <p class="cs-hero__hook">A classic men's wear brand lost 39% of their Black Friday sales, and nobody knew why. I had two weeks and a Hotjar account to find out.</p>
+
+    <div class="cs-insert cs-hero__image">
+      <span class="cs-insert__icon">🖼</span>
+      <span class="cs-insert__label">Hero image — UTurn redesigned checkout</span>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- THE CHALLENGE -->
+    <section class="cs-section">
+      <p class="cs-section__label">The Challenge</p>
+      <h2 class="cs-section__title">A Brand in Its First Online Black Friday — Going Backwards</h2>
+      <div class="cs-prose">
+        <p>UTurn had spent years building a trusted name in classic men's wear — over 20 physical stores, loyal customers, real quality. When they launched their online store and ran their first Black Friday campaign, the expectation was a meaningful lift. What they got instead was a 39% drop in sales compared to the previous period.</p>
+        <p>The media buyer had done his part. Traffic was up. The products were there. People were finding their way to checkout. Somehow, between clicking "checkout" and completing the order, nearly everything was falling apart.</p>
+        <p>Hive Analytics brought me in as their UX and CRO lead to find the leak. The numbers told a stark story: customers had initiated checkouts worth <strong>EGP 1,700,000</strong> — but only <strong>EGP 350,000</strong> in actual sales completed. That's nearly five out of every six Egyptian pounds lost somewhere between intent and purchase. I had two weeks.</p>
+      </div>
+
+      <!-- FUNNEL DIAGRAM -->
+      <div class="cs-visual">
+        <svg width="100%" viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+              <path d="M2 1L8 5L2 9" fill="none" stroke="#8B3A2A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </marker>
+          </defs>
+
+          <!-- Background label -->
+          <text x="48" y="32" font-family="'Figtree', sans-serif" font-size="11" fill="#6B6560" font-weight="600" letter-spacing="0.08em" text-transform="uppercase">CHECKOUT FUNNEL — NOVEMBER 2020</text>
+
+          <!-- Bar 1: Product Views -->
+          <rect x="48" y="56" width="440" height="44" rx="6" fill="#F0EDE6" stroke="#DDD9D0" stroke-width="0.5"/>
+          <rect x="48" y="56" width="440" height="44" rx="6" fill="#1A1714" opacity="0.07"/>
+          <text x="64" y="83" font-family="'Figtree', sans-serif" font-size="13" fill="#1A1714" font-weight="500">Product Views</text>
+          <text x="498" y="83" font-family="'Figtree', sans-serif" font-size="13" fill="#6B6560">68.1%</text>
+          <text x="620" y="83" font-family="'Figtree', sans-serif" font-size="12" fill="#6B6560">baseline</text>
+
+          <!-- Bar 2: Add to Cart -->
+          <rect x="48" y="120" width="307" height="44" rx="6" fill="#F0EDE6" stroke="#DDD9D0" stroke-width="0.5"/>
+          <rect x="48" y="120" width="307" height="44" rx="6" fill="#1A1714" opacity="0.05"/>
+          <text x="64" y="147" font-family="'Figtree', sans-serif" font-size="13" fill="#1A1714" font-weight="500">Add to Cart</text>
+          <text x="498" y="147" font-family="'Figtree', sans-serif" font-size="13" fill="#6B6560">14.3%</text>
+
+          <!-- Bar 3: Initiated Checkout -->
+          <rect x="48" y="184" width="208" height="44" rx="6" fill="#F6EBE8" stroke="#DDD9D0" stroke-width="0.5"/>
+          <text x="64" y="211" font-family="'Figtree', sans-serif" font-size="13" fill="#1A1714" font-weight="500">Initiated Checkout</text>
+          <text x="498" y="211" font-family="'Figtree', sans-serif" font-size="13" fill="#6B6560">39.4%</text>
+
+          <!-- Drop arrow -->
+          <line x1="580" y1="225" x2="580" y2="250" stroke="#8B3A2A" stroke-width="1.5" stroke-dasharray="3 2" marker-end="url(#arr)"/>
+          <text x="598" y="243" font-family="'Figtree', sans-serif" font-size="11" fill="#8B3A2A" font-weight="600">Big drop here ↓</text>
+
+          <!-- Bar 4: Purchase (the problem) -->
+          <rect x="48" y="258" width="78" height="44" rx="6" fill="#8B3A2A" opacity="0.15" stroke="#8B3A2A" stroke-width="1"/>
+          <text x="64" y="285" font-family="'Figtree', sans-serif" font-size="13" fill="#8B3A2A" font-weight="600">Completed Purchase</text>
+          <text x="498" y="285" font-family="'Figtree', sans-serif" font-size="13" fill="#8B3A2A" font-weight="600">18.1%</text>
+
+          <!-- Annotation -->
+          <text x="48" y="326" font-family="'Figtree', sans-serif" font-size="11" fill="#6B6560">39.4% of visitors initiated checkout → only 18.1% completed it. The leak was in the checkout page itself.</text>
+        </svg>
+      </div>
+    </section>
+
+    <!-- RESEARCH & DISCOVERY -->
+    <section class="cs-section">
+      <p class="cs-section__label">Research &amp; Discovery</p>
+      <h2 class="cs-section__title">Thirty Session Recordings Later, the Answer Was Obvious — and Brutal</h2>
+      <div class="cs-prose">
+        <p>I started by connecting Hotjar to capture heatmaps, scroll maps, and session recordings. While that data accumulated, I ran a technical audit, an accessibility audit, and a heuristic UX review in parallel — I wanted to understand the full picture before watching individual users fail.</p>
+        <p>The accessibility audit surfaced a quick win: the checkout CTA was white text on a yellow background, failing both AA and AAA contrast standards. The technical audit ruled out page speed as the culprit — the site was only 0.86% slower than benchmark, not nearly enough to explain a 39% sales drop.</p>
+        <p>The heatmaps and scroll maps told a more uncomfortable story.</p>
+      </div>
+
+      <div class="cs-finding">
+        <div class="cs-finding__dot"></div>
+        <div class="cs-finding__text"><strong>25% of users left before even seeing the checkout form.</strong> They landed on the page and bounced before the form came into view.</div>
+      </div>
+      <div class="cs-finding">
+        <div class="cs-finding__dot"></div>
+        <div class="cs-finding__text"><strong>55% of users left without ever seeing the "Confirm Order" button.</strong> More than half of everyone who tried to check out never reached the point where they could complete it.</div>
+      </div>
+      <div class="cs-finding">
+        <div class="cs-finding__dot"></div>
+        <div class="cs-finding__text"><strong>Users were clicking on non-interactive elements</strong> — and on links that navigated them away from checkout entirely, mid-flow.</div>
+      </div>
+
+      <div class="cs-prose" style="margin-top: 1.5rem;">
+        <p>Then came the session recordings. I watched about 30 of them. On mobile, I kept seeing the same pattern: someone would start filling out the form, scroll down to check their order details, keep scrolling, reach the footer — and close the tab. They never saw the "Place Order" button. They didn't abandon the checkout. They <em>finished scrolling the page</em> without knowing the checkout was still waiting for them.</p>
+        <p>On desktop it was a different kind of pain. The layout forced users to yo-yo left and right — order summary on the left, form on the right, back to the left to check shipping, back to the right to finish typing, then over to the left again to find the confirmation button. I watched user after user lose their place, re-read fields they'd already filled in, and give up.</p>
+        <p>The form wasn't broken. It was just invisible to anyone who didn't already know exactly where to look.</p>
+      </div>
+
+      <div class="cs-insert">
+        <span class="cs-insert__icon">🔥</span>
+        <span class="cs-insert__label">Hotjar scroll map & heatmap screenshots</span>
+        <span class="cs-insert__hint">Showing the 55% scroll-off point and misclick patterns</span>
+      </div>
+    </section>
+
+    <!-- DESIGN PROCESS -->
+    <section class="cs-section">
+      <p class="cs-section__label">Design Process</p>
+      <h2 class="cs-section__title">One Wireframe, Two Hard Decisions, and a Bug We Chose to Ship</h2>
+      <div class="cs-prose">
+        <p>With the friction points mapped, the redesign direction was clear. I produced a wireframe quickly — this wasn't a creative problem, it was a visibility problem. The form needed to be above the fold. The CTA needed to live next to the form, not on the opposite side of the screen. The layout needed to stop pulling users' attention in two directions at once.</p>
+        <p>But two decisions required more than a wireframe to resolve.</p>
+        <p>The first was the "Cash on Delivery" radio button. UTurn's WordPress checkout used COD as a required field — removing it or repositioning it would break order tracking in the backend. Rather than fight the technical constraint, I suggested we keep the button and pre-check it by default. Users wouldn't need to interact with it at all unless they were choosing a different payment method.</p>
+        <p>The second was the harder one: moving the "Confirm Order" button turned out to require separating it from the order summary module — something the WordPress template didn't support out of the box. I sat down with the developers and walked them through session recordings of users scrolling past the button. It was the clearest argument I could make. They agreed to build the checkout page from scratch.</p>
+      </div>
+
+      <!-- BEFORE / AFTER LAYOUT DIAGRAM -->
+      <div class="cs-visual">
+        <svg width="100%" viewBox="0 0 720 380" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+          <!-- Header labels -->
+          <text x="130" y="34" font-family="'Figtree', sans-serif" font-size="11" fill="#8B3A2A" font-weight="700" text-anchor="middle" letter-spacing="0.08em">BEFORE</text>
+          <text x="555" y="34" font-family="'Figtree', sans-serif" font-size="11" fill="#2A6B3A" font-weight="700" text-anchor="middle" letter-spacing="0.08em">AFTER</text>
+
+          <!-- BEFORE: Two-column chaos -->
+          <!-- Left col: Order summary -->
+          <rect x="40" y="50" width="120" height="290" rx="6" fill="#F0EDE6" stroke="#DDD9D0" stroke-width="0.5"/>
+          <text x="100" y="74" font-family="'Figtree', sans-serif" font-size="10" fill="#6B6560" text-anchor="middle" font-weight="600">Order Summary</text>
+          <rect x="54" y="85" width="92" height="8" rx="3" fill="#DDD9D0"/>
+          <rect x="54" y="100" width="72" height="8" rx="3" fill="#DDD9D0"/>
+          <rect x="54" y="115" width="84" height="8" rx="3" fill="#DDD9D0"/>
+          <rect x="54" y="135" width="92" height="6" rx="3" fill="#DDD9D0" opacity="0.5"/>
+          <!-- Confirm Order button far bottom of left col -->
+          <rect x="54" y="308" width="92" height="22" rx="5" fill="#8B3A2A" opacity="0.4"/>
+          <text x="100" y="323" font-family="'Figtree', sans-serif" font-size="9" fill="#8B3A2A" text-anchor="middle" font-weight="600">Confirm Order</text>
+          <text x="100" y="345" font-family="'Figtree', sans-serif" font-size="9" fill="#8B3A2A" text-anchor="middle" opacity="0.8">← buried here</text>
+
+          <!-- Right col: Form -->
+          <rect x="172" y="50" width="120" height="290" rx="6" fill="#F0EDE6" stroke="#DDD9D0" stroke-width="0.5"/>
+          <text x="232" y="74" font-family="'Figtree', sans-serif" font-size="10" fill="#6B6560" text-anchor="middle" font-weight="600">Checkout Form</text>
+          <rect x="186" y="85" width="92" height="12" rx="3" fill="#DDD9D0"/>
+          <rect x="186" y="106" width="92" height="12" rx="3" fill="#DDD9D0"/>
+          <rect x="186" y="127" width="92" height="12" rx="3" fill="#DDD9D0"/>
+          <rect x="186" y="148" width="92" height="12" rx="3" fill="#DDD9D0" opacity="0.7"/>
+          <text x="232" y="200" font-family="'Figtree', sans-serif" font-size="9" fill="#6B6560" text-anchor="middle">form continues…</text>
+
+          <!-- Confusion arrows (user yo-yo) -->
+          <path d="M164 100 Q156 100 164 130" fill="none" stroke="#8B3A2A" stroke-width="1" stroke-dasharray="3 2" opacity="0.6"/>
+          <path d="M164 160 Q156 160 164 190" fill="none" stroke="#8B3A2A" stroke-width="1" stroke-dasharray="3 2" opacity="0.6"/>
+          <text x="148" y="148" font-family="'Figtree', sans-serif" font-size="8" fill="#8B3A2A" text-anchor="middle">back</text>
+          <text x="148" y="160" font-family="'Figtree', sans-serif" font-size="8" fill="#8B3A2A" text-anchor="middle">&amp; forth</text>
+
+          <!-- Divider -->
+          <line x1="368" y1="44" x2="368" y2="356" stroke="#DDD9D0" stroke-width="1" stroke-dasharray="4 3"/>
+
+          <!-- AFTER: Single clean column -->
+          <rect x="420" y="50" width="260" height="290" rx="8" fill="#F0EDE6" stroke="#DDD9D0" stroke-width="0.5"/>
+          <!-- Form above fold badge -->
+          <rect x="434" y="64" width="232" height="14" rx="3" fill="#2A6B3A" opacity="0.12"/>
+          <text x="550" y="75" font-family="'Figtree', sans-serif" font-size="9" fill="#2A6B3A" text-anchor="middle" font-weight="600">FORM VISIBLE ABOVE FOLD ✓</text>
+          <!-- Form fields -->
+          <rect x="434" y="86" width="232" height="14" rx="4" fill="#DDD9D0"/>
+          <rect x="434" y="108" width="232" height="14" rx="4" fill="#DDD9D0"/>
+          <rect x="434" y="130" width="232" height="14" rx="4" fill="#DDD9D0" opacity="0.8"/>
+          <rect x="434" y="152" width="232" height="14" rx="4" fill="#DDD9D0" opacity="0.7"/>
+          <!-- Order summary inline -->
+          <rect x="434" y="182" width="232" height="60" rx="5" fill="#fff" stroke="#DDD9D0" stroke-width="0.5" opacity="0.8"/>
+          <text x="550" y="200" font-family="'Figtree', sans-serif" font-size="9" fill="#6B6560" text-anchor="middle">Order Summary (inline)</text>
+          <rect x="448" y="208" width="110" height="6" rx="3" fill="#DDD9D0" opacity="0.6"/>
+          <rect x="448" y="220" width="80" height="6" rx="3" fill="#DDD9D0" opacity="0.6"/>
+          <!-- CTA right below -->
+          <rect x="434" y="256" width="232" height="30" rx="6" fill="#2A6B3A" opacity="0.75"/>
+          <text x="550" y="275" font-family="'Figtree', sans-serif" font-size="11" fill="#fff" text-anchor="middle" font-weight="600">Place Order</text>
+          <text x="550" y="308" font-family="'Figtree', sans-serif" font-size="9" fill="#2A6B3A" text-anchor="middle">CTA follows the form ✓</text>
+
+          <!-- Caption -->
+          <text x="130" y="365" font-family="'Figtree', sans-serif" font-size="10" fill="#6B6560" text-anchor="middle">Two-column, CTA buried below fold</text>
+          <text x="550" y="365" font-family="'Figtree', sans-serif" font-size="10" fill="#6B6560" text-anchor="middle">Single column, CTA follows the form</text>
+        </svg>
+      </div>
+
+      <div class="cs-prose">
+        <p>There was one technical hiccup with the COD pre-check: on desktop, for large basket sizes, scrolling up would uncheck the radio button due to a WordPress rendering quirk. We caught it in QA. With 94.78% of UTurn's users on mobile, we made the call to ship and fix the desktop edge case in a follow-up sprint. It wasn't perfect. But waiting for perfect would have meant another week of a broken checkout losing real money.</p>
+      </div>
+    </section>
+
+    <!-- THE SOLUTION -->
+    <section class="cs-section">
+      <p class="cs-section__label">The Solution</p>
+      <h2 class="cs-section__title">Less Page, More Purchase</h2>
+      <div class="cs-prose">
+        <p>The redesigned checkout was a single column. Form at the top, visible without scrolling. Order summary collapsed inline rather than competing for attention in a separate column. The "Place Order" button sitting right below the last form field — not across the page, not at the bottom of an unrelated section.</p>
+        <p>We changed the CTA text color to black to fix the contrast failure. We removed links and elements that had been silently navigating users away mid-checkout. We pre-checked Cash on Delivery to eliminate a step that most users didn't need to think about.</p>
+        <p>None of it was radical. The entire change was about removing friction that had quietly accumulated — design decisions that made sense in isolation but combined into a checkout that was harder to complete than to abandon.</p>
+      </div>
+
+      <div class="cs-insert cs-insert--wide">
+        <span class="cs-insert__icon">🎨</span>
+        <span class="cs-insert__label">Wireframe / final checkout redesign screenshots</span>
+        <span class="cs-insert__hint">Before & after side-by-side, or annotated final design</span>
+      </div>
+    </section>
+
+    <!-- OUTCOMES -->
+    <section class="cs-section">
+      <p class="cs-section__label">Outcomes</p>
+      <h2 class="cs-section__title">255% in Three Months</h2>
+
+      <div class="cs-stats">
+        <div class="cs-stat">
+          <div class="cs-stat__value">+255%</div>
+          <div class="cs-stat__label">Checkout-to-purchase conversion rate, within 3 months</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__value">−37.2%</div>
+          <div class="cs-stat__label">Form completion time — faster, smoother interactions</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__value">2 wks</div>
+          <div class="cs-stat__label">From brief to redesign handoff</div>
+        </div>
+      </div>
+
+      <div class="cs-prose">
+        <p>The numbers surprised even me. A 255% lift isn't a tweak — it's the difference between a checkout that works and one that doesn't. The 37.2% reduction in form completion time told the same story through a different lens: users weren't just converting more, they were completing the flow faster and with less effort.</p>
+        <p>The ripple effects went beyond the metrics. Hive Analytics used the results to make the case for expanding their CRO team. UTurn began investing in UX improvements across the rest of their online store. A two-week engagement turned into an ongoing conversation about what else the data was telling them.</p>
+      </div>
+
+      <div class="cs-insert">
+        <span class="cs-insert__icon">📈</span>
+        <span class="cs-insert__label">Google Analytics before/after conversion comparison</span>
+        <span class="cs-insert__hint">Screenshot of GA showing the conversion uplift over time</span>
+      </div>
+    </section>
+
+    <!-- REFLECTION -->
+    <section class="cs-section">
+      <p class="cs-section__label">Reflection</p>
+      <h2 class="cs-section__title">The Fastest Research Is the Research You Actually Do</h2>
+      <div class="cs-prose">
+        <p>This project changed how I think about research timelines. The instinct in a two-week engagement is to skip the discovery and jump straight to solutions — there isn't time for proper research. But the solution here <em>was</em> the research. Without the session recordings, I would have been guessing. The heatmaps alone weren't enough. It was watching real users scroll past the checkout button and close the tab that gave me the conviction to ask developers to rebuild a page from scratch.</p>
+        <p>The COD decision also stuck with me. The technically clean solution would have been to remove the radio button entirely. The right solution was to understand why it existed — backend order tracking — and work within that constraint rather than against it. The best UX fix isn't always the one that looks best in a wireframe.</p>
+        <p>What I'm proudest of in this project isn't the 255%. It's that the case for change was made entirely with evidence that already existed — no expensive research, no lengthy testing cycles. The data was already there. Someone just needed to watch it.</p>
+      </div>
+    </section>
+
+  </main>
+</article>
+
+<footer class="cs-footer">
+  <div>
+    <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:0.25rem;">Up next</p>
+    <a href="#" style="font-weight:600;font-size:1.0625rem;color:var(--text);">Next project →</a>
+  </div>
+  <a href="/" class="cs-footer__cta">← Back to Portfolio</a>
+</footer>
+
+<script>
+  const navTitle = document.querySelector('.cs-nav__title');
+  const heroTitle = document.querySelector('.cs-hero__title');
+  if (navTitle && heroTitle) {
+    new IntersectionObserver(
+      ([e]) => navTitle.classList.toggle('visible', !e.isIntersecting),
+      { threshold: 0 }
+    ).observe(heroTitle);
+  }
+</script>
+</body>
+</html>
