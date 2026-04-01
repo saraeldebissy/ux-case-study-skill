@@ -21,9 +21,13 @@ quality checks, Visualizer-generated diagrams, and both full + teaser output for
 
 ---
 
-## On First Trigger — Check Portfolio Context
+## On First Trigger — Read Preferences & Check Context
 
-Before starting, read `references/portfolio-strategy.md` and check:
+**Step 1**: Read `references/feedback-log.md`. Apply all confirmed user preferences
+silently — they should feel invisible, like Claude just naturally knows how this user
+works. Do not mention the log or that you're applying preferences.
+
+**Step 2**: Read `references/portfolio-strategy.md` and check:
 - Is the user building/updating a portfolio or job searching? → invoke portfolio strategy
 - Is this a second case study this session? → use cross-portfolio differentiation logic
 - Otherwise → proceed directly to entry path detection
@@ -140,9 +144,12 @@ Then proceed to writing.
 
 1. Read everything provided
 2. Silently map to: Project Identity · Problem · Solution · Outcomes · Visuals
-3. Ask one focused follow-up covering genuine gaps + always ask confidentiality and tone
-4. Run Weak Spot Detector (Pass 1 from `references/quality-checks.md`) on mapped inputs
-5. Proceed to writing
+3. **Hero metadata rule** — for Duration, Year, Scope, and Role:
+   - Use if stated or reasonably inferable from the content (e.g. COVID context → 2020)
+   - Ask if there's no basis for it at all — add to the follow-up message
+4. Ask one focused follow-up covering genuine gaps + always ask confidentiality and tone
+5. Run Weak Spot Detector (Pass 1 from `references/quality-checks.md`) on mapped inputs
+6. Proceed to writing
 
 ---
 
@@ -233,10 +240,59 @@ If yes, re-read and rewrite only the prose sections (not the HTML structure or C
 
 ---
 
+## Self-Improvement Loop
+
+This skill learns from user reactions. After every case study session:
+
+### Listening for feedback signals
+
+Watch for any of these during or after writing:
+- Negative reaction: "this didn't land", "rewrite this", "the hook is weak", "I don't like X"
+- Positive signal: "remember this", "this is exactly right", "save this style"
+- Unprompted rewrite request on a specific section
+
+One-off issues worth flagging — even if the user didn't name them — are valid signal.
+A single strong reaction matters more than a pattern.
+
+### What to do when you catch a signal
+
+**1. Log it** — append an entry to `references/feedback-log.md` immediately using the
+entry format defined in that file.
+
+**2. Propose the fix** — surface it conversationally, keep it small and specific:
+> "Want me to update the skill so future hooks avoid this? I'd add one line to
+> `examples.md` — just say yes and I'll apply it."
+
+**3. Wait for approval** — never edit a reference file without the user saying yes.
+If they say no, mark the entry as declined and move on.
+
+**4. Apply if approved** — make the specific edit to the specific reference file.
+Mark the log entry as approved. Confirm to the user in one line.
+
+### What can be improved
+
+| User reaction about… | Update… |
+|---|---|
+| Hook quality | `examples.md` — add/remove hook patterns |
+| Tone feeling off | `tone-modes.md` — adjust mode characteristics |
+| Section too long / short | `ux-sections.md` — add a length note |
+| Recruiter lens too harsh / lenient | `quality-checks.md` — adjust flag criteria |
+| Visual too generic | Visual Generation Guide in `SKILL.md` |
+| Style preference (fonts, colours) | `html-template.md` — update CSS variables |
+
+### What cannot be self-improved
+
+- The `name:` field in the SKILL.md frontmatter — breaks installs
+- The core interview phase structure — changing this breaks the brief-building logic
+- The entry path detection logic
+
+---
+
 ## Reference Files Index
 
 | File | Read when… |
 |---|---|
+| `references/feedback-log.md` | **First** — every session, before anything else |
 | `references/ux-sections.md` | Before writing — section writing guide |
 | `references/html-template.md` | Before writing — HTML structure + CSS |
 | `references/tone-modes.md` | After tone reference is given, before writing |

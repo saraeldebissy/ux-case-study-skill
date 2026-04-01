@@ -2,7 +2,7 @@
 
 A Claude skill that turns your project notes, raw transcripts, or Behance/portfolio links into polished, portfolio-ready UX case studies — as styled HTML you can drop straight into your website.
 
-Created by **Sara Khalil** · MIT License
+Created by **Sara Eldebissy** · MIT License
 
 ---
 
@@ -21,7 +21,7 @@ Created by **Sara Khalil** · MIT License
 
 ## Example output
 
-→ [UTurn Checkout Redesign](examples/uturn-case-study.html) — checkout CRO, +255% conversion
+Add your own generated case studies to the `examples/` folder — see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -51,7 +51,7 @@ Or paste raw notes / a URL and Claude will detect the transform path automatical
 
 ```
 skill/
-├── SKILL.md                   ← core workflow (245 lines)
+├── SKILL.md                   ← core workflow
 └── references/
     ├── ux-sections.md         ← section-by-section writing guide
     ├── html-template.md       ← base HTML + CSS template
@@ -89,7 +89,7 @@ When you don't have content yet, the skill offers two paths:
 |---|---|---|
 | Raw notes / bullet points | ✅ | Paste directly |
 | Uploaded screenshots | ✅ | Upload slide images |
-| Personal portfolio URLs | ✅ | e.g. sarakhalil.me/work/project |
+| Personal portfolio URLs | ✅ | e.g. yourname.me/work/project |
 | Behance links | ⚠️ | Behance requires login — upload screenshots instead |
 | PDFs / docs | ✅ | Upload the file |
 | Interview transcripts | ✅ | Paste as text |

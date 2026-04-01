@@ -1,31 +1,64 @@
 # HTML Template — UX Case Study
 
-This is the base HTML structure and CSS for outputting a case study. Read this before writing
-the final HTML. The output should be a single self-contained `.html` file.
+Output is a single self-contained `.html` file. White page, editorial typography, clean
+section labels, full-width visuals, descriptive placeholders, and 3-column stat containers
+with highlighted numbers.
 
-Apply the `frontend-design` skill for aesthetic direction — choose a distinctive typographic
-and color palette that fits the user's tone reference. The CSS variables below are the
-theming layer; override them to match the chosen aesthetic.
+Apply `frontend-design` skill for font selection. Avoid Inter/Roboto. Pick one distinctive
+display font + one clean body font from Google Fonts.
 
 ---
 
-## File Structure
+## Design Principles (from reference site)
 
-The output is ONE file: `[project-name]-case-study.html`
+- **White background** — pure white, no off-whites or tinted surfaces
+- **Section label** — small, uppercase, spaced, muted — sits above the heading like a tag
+- **Headings** — large, display font, generous size
+- **Body text** — clean, readable, generous line height, max ~65ch wide
+- **Visuals** — full width, no card wrapper, just the image breathing on the page
+- **Placeholders** — specific, not generic — describe exactly what goes here
+- **Data/findings** — always 3 containers side by side, number large and highlighted
+- **No decorative borders or shadows** — whitespace does the separation work
 
+---
+
+## Visual Slot Rules
+
+**Rule 1 — Real asset exists**
+User has a screenshot, wireframe, or image → render as full-width `<figure class="cs-visual">` with a caption.
+
+**Rule 2 — Placeholder (user will insert)**
+No asset yet → render `.cs-placeholder` with a specific label + hint describing exactly what goes there.
+Never write "Insert image here" — always write what specifically should go here.
+
+**Rule 3 — Diagram to create**
+Visual doesn't exist but needs to be made → either generate with Visualizer inline,
+OR render a `.cs-diagram-desc` block describing exactly what the diagram should show.
+
+---
+
+## Data / Findings Rule
+
+Any time there are 3 data points, findings, or metrics → use `.cs-stats` (3-column grid).
+Numbers go large in accent color. Label goes below in muted small text.
+2 data points → use `.cs-stats--two`. 4+ → two rows of 2, or a prose list.
+
+---
+
+## Hero Metadata Rule
+
+For each metadata field (Scope · Role · Duration · Year):
+- **Stated or inferable from context** → use it
+- **Not available** → render a muted placeholder so the user knows to fill it in:
+
+```html
+<div>
+  <span class="cs-meta-label">Year</span>
+  <span class="cs-meta-value" style="color:var(--light);">[Year]</span>
+</div>
 ```
-<head>         → meta, Google Fonts import, all CSS
-<body>
-  <nav>        → sticky top bar with project title + back link
-  <article>
-    <header>   → hero section
-    <main>
-      <section> × N   → one per case study section
-    </main>
-  </article>
-  <footer>     → next/prev project nav + back to portfolio CTA
-</body>
-```
+
+Never omit a field silently. Never guess with no basis. Always leave a visible signal.
 
 ---
 
@@ -37,472 +70,470 @@ The output is ONE file: `[project-name]-case-study.html`
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>[Project Name] — Case Study</title>
-
-  <!-- Replace with chosen fonts from Google Fonts. Avoid Inter/Roboto/Arial. -->
+  <title>[Project Name] — [Your Name]</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DISPLAY_FONT&family=BODY_FONT&display=swap" rel="stylesheet" />
 
   <style>
-    /* ─── THEME TOKENS ─────────────────────────────────────────── */
     :root {
-      --bg:           #FAFAF8;        /* page background */
-      --surface:      #F2F0EC;        /* card / section bg */
-      --border:       #E0DDD7;        /* dividers */
-      --text:         #1A1A18;        /* primary text */
-      --text-muted:   #6B6860;        /* captions, meta */
-      --accent:       #2A4EFF;        /* links, highlights */
-      --accent-soft:  #EEF1FF;        /* accent tint bg */
-
-      --font-display: 'DISPLAY_FONT', serif;
-      --font-body:    'BODY_FONT', sans-serif;
-
-      --max-w:        760px;
-      --max-w-wide:   1040px;
-
-      --space-xs:     0.5rem;
-      --space-sm:     1rem;
-      --space-md:     2rem;
-      --space-lg:     4rem;
-      --space-xl:     7rem;
+      --white:      #FFFFFF;
+      --text:       #111111;
+      --muted:      #888888;
+      --light:      #AAAAAA;
+      --border:     #E8E8E8;
+      --surface:    #F5F5F5;
+      --accent:     #111111;
+      --font-d:     'DISPLAY_FONT', Georgia, serif;
+      --font-b:     'BODY_FONT', system-ui, sans-serif;
+      --max:        680px;
+      --max-wide:   960px;
     }
-
-    /* ─── RESET ─────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body {
-      background: var(--bg);
+      background: var(--white);
       color: var(--text);
-      font-family: var(--font-body);
+      font-family: var(--font-b);
       font-size: 1.0625rem;
-      line-height: 1.75;
+      line-height: 1.8;
       -webkit-font-smoothing: antialiased;
     }
-    img { max-width: 100%; display: block; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    img, video { max-width: 100%; display: block; }
+    a { color: var(--text); text-decoration: none; }
 
-    /* ─── NAV ────────────────────────────────────────────────────── */
+    /* NAV */
     .cs-nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: color-mix(in srgb, var(--bg) 85%, transparent);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: var(--space-xs) var(--space-md);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-md);
-    }
-    .cs-nav__back {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 0.375rem;
-    }
-    .cs-nav__back::before { content: '←'; }
-    .cs-nav__title {
-      font-family: var(--font-display);
-      font-size: 0.9375rem;
-      font-weight: 600;
-      color: var(--text);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .cs-nav__title.visible { opacity: 1; }
-
-    /* ─── HERO ───────────────────────────────────────────────────── */
-    .cs-hero {
-      max-width: var(--max-w-wide);
+      max-width: var(--max-wide);
       margin: 0 auto;
-      padding: var(--space-xl) var(--space-md) var(--space-lg);
-    }
-    .cs-hero__meta {
+      padding: 1.5rem 2rem;
       display: flex;
-      flex-wrap: wrap;
-      gap: var(--space-xs);
-      margin-bottom: var(--space-md);
+      justify-content: space-between;
+      align-items: center;
     }
-    .cs-tag {
-      font-size: 0.8125rem;
-      font-weight: 500;
-      letter-spacing: 0.03em;
-      padding: 0.25rem 0.75rem;
-      border-radius: 999px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
+    .cs-nav a { font-size: 0.875rem; color: var(--muted); }
+    .cs-nav a:hover { color: var(--text); }
+
+    /* HERO */
+    .cs-hero {
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      padding: 4rem 2rem 3rem;
     }
     .cs-hero__title {
-      font-family: var(--font-display);
-      font-size: clamp(2.25rem, 5vw, 4rem);
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      color: var(--text);
-      margin-bottom: var(--space-md);
-      max-width: 18ch;
+      font-family: var(--font-d);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      max-width: 22ch;
+      margin-bottom: 2rem;
     }
-    .cs-hero__hook {
-      font-size: 1.1875rem;
-      color: var(--text-muted);
-      max-width: 56ch;
-      line-height: 1.6;
+    .cs-hero__eyebrow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2.5rem;
+    }
+    .cs-meta-label {
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--light);
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+    .cs-meta-value {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+    .cs-hero__title {
+      font-family: var(--font-d);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      max-width: 22ch;
     }
 
-    /* Hero image placeholder */
-    .cs-hero__image {
-      margin-top: var(--space-lg);
-      width: 100%;
-      aspect-ratio: 16 / 7;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
+    /* HERO IMAGE — full width */
+    .cs-hero-image {
+      max-width: var(--max-wide);
+      margin: 3rem auto 0;
+      padding: 0 2rem;
     }
+    .cs-hero-image img { width: 100%; border-radius: 4px; }
 
-    /* ─── ARTICLE LAYOUT ─────────────────────────────────────────── */
-    article {
-      max-width: var(--max-w-wide);
+    /* BODY CONTAINER */
+    .cs-body {
+      max-width: var(--max-wide);
       margin: 0 auto;
-      padding: 0 var(--space-md);
+      padding: 0 2rem;
     }
-    main {
-      display: grid;
-      grid-template-columns: 1fr min(var(--max-w), 100%) 1fr;
-    }
-    main > * { grid-column: 2; }
-    main > .cs-full-bleed { grid-column: 1 / -1; }
 
-    /* ─── SECTIONS ───────────────────────────────────────────────── */
+    /* INTRO */
+    .cs-intro {
+      max-width: var(--max);
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cs-intro p { margin-bottom: 1.25rem; }
+    .cs-intro p:last-child { margin-bottom: 0; }
+    .cs-intro strong { font-weight: 600; }
+
+    /* SECTIONS */
     .cs-section {
-      padding: var(--space-lg) 0;
-      border-top: 1px solid var(--border);
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--border);
     }
-    .cs-section:first-child { border-top: none; }
+    .cs-section:last-child { border-bottom: none; }
 
-    .cs-section__label {
+    /* Section label — small tag above heading */
+    .cs-label {
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--light);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Section heading */
+    .cs-title {
+      font-family: var(--font-d);
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1.75rem;
+      max-width: 28ch;
+    }
+
+    /* Prose */
+    .cs-prose { max-width: var(--max); }
+    .cs-prose p { margin-bottom: 1.125rem; }
+    .cs-prose p:last-child { margin-bottom: 0; }
+    .cs-prose strong { font-weight: 600; }
+    .cs-prose h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 2rem 0 0.5rem;
+    }
+
+    /* STATS — 3-column with highlighted numbers */
+    .cs-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 2.5rem 0;
+    }
+    .cs-stats--two { grid-template-columns: repeat(2, 1fr); }
+    .cs-stat {
+      background: var(--white);
+      padding: 2rem 1.5rem;
+    }
+    .cs-stat__n {
+      font-family: var(--font-d);
+      font-size: 2.75rem;
+      font-weight: 400;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+    }
+    .cs-stat__l {
+      font-size: 0.875rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* FULL-WIDTH VISUAL */
+    .cs-visual { margin: 2.5rem 0; }
+    .cs-visual img, .cs-visual video { width: 100%; border-radius: 4px; }
+    .cs-visual figcaption {
+      margin-top: 0.625rem;
       font-size: 0.75rem;
+      color: var(--light);
+      letter-spacing: 0.02em;
+    }
+
+    /* PLACEHOLDER — specific, not generic */
+    .cs-placeholder {
+      background: var(--surface);
+      border-radius: 4px;
+      padding: 2.5rem;
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.375rem;
+      margin: 2.5rem 0;
+    }
+    .cs-ph-tag {
+      font-size: 0.625rem;
       font-weight: 600;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: var(--space-sm);
+      color: var(--light);
     }
-    .cs-section__title {
-      font-family: var(--font-display);
-      font-size: clamp(1.5rem, 3vw, 2.25rem);
-      line-height: 1.2;
-      letter-spacing: -0.01em;
-      margin-bottom: var(--space-md);
-      color: var(--text);
-    }
+    .cs-ph-title { font-size: 1rem; font-weight: 600; color: var(--muted); }
+    .cs-ph-hint { font-size: 0.875rem; color: var(--light); }
 
-    /* Body prose */
-    .cs-prose p           { margin-bottom: var(--space-sm); }
-    .cs-prose p:last-child { margin-bottom: 0; }
-    .cs-prose strong      { font-weight: 600; color: var(--text); }
-
-    /* ─── BLOCKQUOTE ─────────────────────────────────────────────── */
-    .cs-quote {
-      margin: var(--space-md) 0;
-      padding: var(--space-md) var(--space-md) var(--space-md) calc(var(--space-md) + 4px);
-      border-left: 4px solid var(--accent);
-      background: var(--accent-soft);
-      border-radius: 0 8px 8px 0;
+    /* DIAGRAM DESCRIPTION BLOCK */
+    .cs-diagram-desc {
+      margin: 2.5rem 0;
+      padding: 1.5rem 2rem;
+      border-left: 2px solid var(--border);
+      background: var(--surface);
+      border-radius: 0 4px 4px 0;
     }
+    .cs-dd-tag {
+      font-size: 0.625rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--light);
+      margin-bottom: 0.5rem;
+    }
+    .cs-dd-text { font-size: 0.9375rem; color: var(--muted); line-height: 1.65; }
+
+    /* QUOTE */
+    .cs-quote { margin: 2.5rem 0; max-width: var(--max); }
     .cs-quote p {
-      font-family: var(--font-display);
-      font-size: 1.125rem;
-      line-height: 1.55;
-      color: var(--text);
+      font-family: var(--font-d);
+      font-size: 1.375rem;
+      font-style: italic;
+      line-height: 1.5;
     }
     .cs-quote cite {
       display: block;
-      margin-top: var(--space-xs);
-      font-size: 0.875rem;
-      color: var(--text-muted);
+      margin-top: 0.75rem;
+      font-size: 0.8125rem;
+      color: var(--light);
       font-style: normal;
     }
 
-    /* ─── STAT CARDS ─────────────────────────────────────────────── */
-    .cs-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: var(--space-sm);
-      margin: var(--space-md) 0;
-    }
-    .cs-stat {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: var(--space-md);
-    }
-    .cs-stat__value {
-      font-family: var(--font-display);
-      font-size: 2.25rem;
-      font-weight: 700;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: var(--space-xs);
-    }
-    .cs-stat__label {
-      font-size: 0.875rem;
-      color: var(--text-muted);
-      line-height: 1.4;
-    }
-
-    /* ─── VISUAL INSERT PLACEHOLDER ──────────────────────────────── */
-    .cs-insert {
-      margin: var(--space-md) 0;
-      width: 100%;
-      min-height: 280px;
-      background: var(--surface);
-      border: 2px dashed var(--border);
-      border-radius: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: var(--space-xs);
-      padding: var(--space-md);
-      text-align: center;
-      color: var(--text-muted);
-    }
-    .cs-insert__icon  { font-size: 2rem; opacity: 0.4; }
-    .cs-insert__label { font-size: 0.9375rem; font-weight: 500; }
-    .cs-insert__hint  { font-size: 0.8125rem; opacity: 0.7; }
-
-    /* Wide inserts (full bleed within article) */
-    .cs-insert--wide {
-      min-height: 360px;
-    }
-
-    /* ─── VISUALIZER EMBED ───────────────────────────────────────── */
-    /* Wrapper for Visualizer-generated inline diagrams */
-    .cs-visual {
-      margin: var(--space-md) 0;
-      border-radius: 10px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-    }
-
-    /* ─── FOOTER ─────────────────────────────────────────────────── */
+    /* FOOTER */
     .cs-footer {
-      margin-top: var(--space-xl);
-      padding: var(--space-lg) var(--space-md);
-      border-top: 1px solid var(--border);
+      max-width: var(--max-wide);
+      margin: 0 auto;
+      padding: 3rem 2rem;
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      gap: var(--space-md);
+      border-top: 1px solid var(--border);
       flex-wrap: wrap;
-      max-width: var(--max-w-wide);
-      margin-inline: auto;
+      gap: 1rem;
     }
-    .cs-footer__cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: var(--accent);
-      color: #fff;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 0.9375rem;
-      transition: opacity 0.15s;
-    }
-    .cs-footer__cta:hover { opacity: 0.85; text-decoration: none; }
+    .cs-footer a { font-size: 0.875rem; color: var(--muted); }
+    .cs-footer a:hover { color: var(--text); }
 
-    /* ─── RESPONSIVE ─────────────────────────────────────────────── */
     @media (max-width: 640px) {
-      .cs-hero { padding-top: var(--space-lg); }
-      .cs-stats { grid-template-columns: 1fr 1fr; }
-      .cs-footer { flex-direction: column; align-items: flex-start; }
+      .cs-stats, .cs-stats--two { grid-template-columns: 1fr; }
+      .cs-hero__eyebrow { gap: 1.25rem; }
     }
   </style>
 </head>
-
 <body>
 
-  <!-- NAV -->
   <nav class="cs-nav">
-    <a href="/" class="cs-nav__back">Portfolio</a>
-    <span class="cs-nav__title">[Project Name]</span>
+    <a href="/">← Work</a>
   </nav>
 
-  <article>
+  <header class="cs-hero">
+    <!-- Optional: small company/client label above the title -->
+    <!-- <span class="cs-meta-label" style="margin-bottom:1rem;display:block;">[Company × Project]</span> -->
 
-    <!-- HERO -->
-    <header class="cs-hero">
-      <div class="cs-hero__meta">
-        <span class="cs-tag">[Role]</span>
-        <span class="cs-tag">[Timeline]</span>
-        <span class="cs-tag">[Company / Anonymized]</span>
+    <h1 class="cs-hero__title">[Project title as a strong statement or question]</h1>
+
+    <div class="cs-hero__eyebrow">
+      <div>
+        <span class="cs-meta-label">Scope</span>
+        <span class="cs-meta-value">[UX · Research]</span>
       </div>
-      <h1 class="cs-hero__title">[Project Title]</h1>
-      <p class="cs-hero__hook">[1–2 sentence hook — the core tension or headline result]</p>
-
-      <!-- Replace with actual hero image or generated visual -->
-      <div class="cs-insert cs-hero__image">
-        <span class="cs-insert__icon">🖼</span>
-        <span class="cs-insert__label">Hero Image</span>
-        <span class="cs-insert__hint">Final design, key screen, or cover visual</span>
+      <div>
+        <span class="cs-meta-label">Role</span>
+        <span class="cs-meta-value">[Your Role]</span>
       </div>
-    </header>
-
-    <main>
-
-      <!-- SECTION: THE CHALLENGE -->
-      <section class="cs-section">
-        <p class="cs-section__label">Challenge</p>
-        <h2 class="cs-section__title">[Challenge headline]</h2>
-        <div class="cs-prose">
-          <p>[Problem description — who was affected, what was at stake]</p>
-          <p>[Discovery — how the problem was found]</p>
-          <p>[Constraints or context that shaped the starting point]</p>
-        </div>
-
-        <!-- Visualizer OR insert — e.g. problem diagram, analytics drop-off -->
-        <div class="cs-insert">
-          <span class="cs-insert__icon">📊</span>
-          <span class="cs-insert__label">Problem evidence</span>
-          <span class="cs-insert__hint">Analytics screenshot, before state, or data visual</span>
-        </div>
-      </section>
-
-      <!-- SECTION: RESEARCH & DISCOVERY (omit if not applicable) -->
-      <section class="cs-section">
-        <p class="cs-section__label">Research & Discovery</p>
-        <h2 class="cs-section__title">[Research headline]</h2>
-        <div class="cs-prose">
-          <p>[Methods used + sample size]</p>
-          <p>[2–3 key findings]</p>
-          <p>[The "aha" insight that changed direction]</p>
-        </div>
-
-        <!-- Visualizer: user journey map, affinity clusters, insight cards -->
-        <div class="cs-visual">
-          <!-- VISUALIZER OUTPUT GOES HERE -->
-        </div>
-      </section>
-
-      <!-- SECTION: DESIGN PROCESS -->
-      <section class="cs-section">
-        <p class="cs-section__label">Design Process</p>
-        <h2 class="cs-section__title">[Process headline]</h2>
-        <div class="cs-prose">
-          <p>[How many iterations, key pivots]</p>
-          <p>[Key decision moment: options → choice → why]</p>
-          <p>[What got cut and why]</p>
-        </div>
-
-        <!-- Visualizer: process flow OR insert for wireframes -->
-        <div class="cs-visual">
-          <!-- VISUALIZER OUTPUT GOES HERE -->
-        </div>
-
-        <div class="cs-insert">
-          <span class="cs-insert__icon">✏️</span>
-          <span class="cs-insert__label">Wireframes / Iterations</span>
-          <span class="cs-insert__hint">Early explorations, sketches, or prototype screenshots</span>
-        </div>
-      </section>
-
-      <!-- SECTION: THE SOLUTION -->
-      <section class="cs-section">
-        <p class="cs-section__label">Solution</p>
-        <h2 class="cs-section__title">[Solution headline]</h2>
-        <div class="cs-prose">
-          <p>[What was shipped — scope it clearly]</p>
-          <p>[Core decision 1: what → why → what it solves]</p>
-          <p>[Core decision 2: what → why → what it solves]</p>
-        </div>
-
-        <div class="cs-insert cs-insert--wide">
-          <span class="cs-insert__icon">🎨</span>
-          <span class="cs-insert__label">Final Design</span>
-          <span class="cs-insert__hint">Key screens, prototype recording, or annotated mockups</span>
-        </div>
-      </section>
-
-      <!-- SECTION: OUTCOMES & IMPACT -->
-      <section class="cs-section">
-        <p class="cs-section__label">Outcomes</p>
-        <h2 class="cs-section__title">[Outcomes headline]</h2>
-
-        <!-- Stat cards — populate from actual metrics; remove if no data -->
-        <div class="cs-stats">
-          <div class="cs-stat">
-            <div class="cs-stat__value">[+X%]</div>
-            <div class="cs-stat__label">[Metric name]</div>
-          </div>
-          <div class="cs-stat">
-            <div class="cs-stat__value">[−X%]</div>
-            <div class="cs-stat__label">[Metric name]</div>
-          </div>
-          <div class="cs-stat">
-            <div class="cs-stat__value">[Xmo]</div>
-            <div class="cs-stat__label">[Metric name]</div>
-          </div>
-        </div>
-
-        <div class="cs-prose">
-          <p>[Business impact + context]</p>
-          <p>[What's unresolved or still being tracked]</p>
-        </div>
-
-        <!-- User quote if available -->
-        <blockquote class="cs-quote">
-          <p>"[User or stakeholder quote]"</p>
-          <cite>— [Name or role], [Company or context]</cite>
-        </blockquote>
-
-        <!-- Visualizer: before/after chart or metric visual -->
-        <div class="cs-visual">
-          <!-- VISUALIZER OUTPUT GOES HERE -->
-        </div>
-      </section>
-
-      <!-- SECTION: REFLECTION -->
-      <section class="cs-section">
-        <p class="cs-section__label">Reflection</p>
-        <h2 class="cs-section__title">[Reflection headline]</h2>
-        <div class="cs-prose">
-          <p>[What you'd do differently]</p>
-          <p>[What you learned]</p>
-          <p>[Personal highlight / contribution you're proudest of]</p>
-          <p>[What's next for this product area]</p>
-        </div>
-      </section>
-
-    </main>
-  </article>
-
-  <!-- FOOTER -->
-  <footer class="cs-footer">
-    <div>
-      <p style="font-size:0.875rem; color:var(--text-muted);">Next project</p>
-      <a href="#" style="font-weight:600; font-size:1.0625rem;">[Next Project Name] →</a>
+      <div>
+        <span class="cs-meta-label">Duration</span>
+        <span class="cs-meta-value">[Timeline]</span>
+      </div>
+      <div>
+        <span class="cs-meta-label">Year</span>
+        <span class="cs-meta-value">[Year]</span>
+      </div>
     </div>
-    <a href="/" class="cs-footer__cta">← Back to Portfolio</a>
-  </footer>
+  </header>
 
-  <script>
-    // Fade in nav title on scroll
-    const navTitle = document.querySelector('.cs-nav__title');
-    const hero = document.querySelector('.cs-hero__title');
-    if (navTitle && hero) {
-      const obs = new IntersectionObserver(
-        ([e]) => navTitle.classList.toggle('visible', !e.isIntersecting),
-        { threshold: 0 }
-      );
-      obs.observe(hero);
-    }
-  </script>
+  <div class="cs-hero-image">
+    <div class="cs-placeholder">
+      <span class="cs-ph-tag">Hero Image</span>
+      <span class="cs-ph-title">[Final design, key screen, or cover visual]</span>
+      <span class="cs-ph-hint">Wide crop — 1400×500px or similar aspect ratio</span>
+    </div>
+  </div>
+
+  <div class="cs-body">
+
+    <div class="cs-intro">
+      <p>[Scene-setting paragraph — who the client is, what happened, why you were brought in.]</p>
+      <p><strong>My role</strong><br>[Your specific contribution — one focused paragraph.]</p>
+      <p><strong>Results</strong><br>[Lead with the headline outcome. Number first.]</p>
+    </div>
+
+    <!-- PROBLEM DEFINITION -->
+    <section class="cs-section">
+      <span class="cs-label">Problem Definition</span>
+      <h2 class="cs-title">[Problem headline]</h2>
+      <div class="cs-prose">
+        <p>[Problem narrative — what was broken, who it affected, why it mattered.]</p>
+      </div>
+
+      <!-- 3-column stats for data points -->
+      <div class="cs-stats">
+        <div class="cs-stat">
+          <div class="cs-stat__n">[X%]</div>
+          <div class="cs-stat__l">[What this number means in plain language]</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__n">[X%]</div>
+          <div class="cs-stat__l">[What this number means]</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__n">[X%]</div>
+          <div class="cs-stat__l">[What this number means]</div>
+        </div>
+      </div>
+
+      <figure class="cs-visual">
+        <div class="cs-placeholder">
+          <span class="cs-ph-tag">Analytics Screenshot</span>
+          <span class="cs-ph-title">[Specific screenshot — e.g. GA sales funnel]</span>
+          <span class="cs-ph-hint">Showing [what it reveals]</span>
+        </div>
+        <figcaption>[Caption — source + date]</figcaption>
+      </figure>
+    </section>
+
+    <!-- DISCOVERY -->
+    <section class="cs-section">
+      <span class="cs-label">Discovery</span>
+      <h2 class="cs-title">[Discovery headline]</h2>
+      <div class="cs-prose">
+        <p>[How you investigated — methods, tools, what you were looking for.]</p>
+        <h3>[Sub-finding label]</h3>
+        <p>[Specific finding and what it meant.]</p>
+      </div>
+
+      <div class="cs-stats">
+        <div class="cs-stat">
+          <div class="cs-stat__n">[X%]</div>
+          <div class="cs-stat__l">[Finding in plain language]</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__n">[X%]</div>
+          <div class="cs-stat__l">[Finding in plain language]</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__n">[X]</div>
+          <div class="cs-stat__l">[Finding in plain language]</div>
+        </div>
+      </div>
+
+      <figure class="cs-visual">
+        <div class="cs-placeholder">
+          <span class="cs-ph-tag">Research Visual</span>
+          <span class="cs-ph-title">[Specific asset — e.g. Hotjar scroll map]</span>
+          <span class="cs-ph-hint">Showing [specific behavior or finding]</span>
+        </div>
+        <figcaption>[Caption]</figcaption>
+      </figure>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="cs-section">
+      <span class="cs-label">Solution</span>
+      <h2 class="cs-title">[Solution headline]</h2>
+      <div class="cs-prose">
+        <p>[What you designed — lead with the insight, then the decisions.]</p>
+      </div>
+
+      <!-- Real wireframe if available, placeholder if not -->
+      <figure class="cs-visual">
+        <div class="cs-placeholder">
+          <span class="cs-ph-tag">Wireframe</span>
+          <span class="cs-ph-title">[Specific design artifact — e.g. redesigned onboarding flow]</span>
+          <span class="cs-ph-hint">Lo-fi or hi-fi, full layout preferred</span>
+        </div>
+      </figure>
+
+      <!-- If a diagram needs to be created — describe it, or generate with Visualizer -->
+      <div class="cs-diagram-desc">
+        <div class="cs-dd-tag">Diagram to create</div>
+        <div class="cs-dd-text">
+          [Describe exactly what the diagram should show — e.g. "Before/after layout comparison:
+          left = original two-column with CTA buried, right = single column with CTA below form.
+          Annotate the 3 key changes."]
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="cs-section">
+      <span class="cs-label">Results</span>
+      <h2 class="cs-title">[Results headline]</h2>
+
+      <div class="cs-stats">
+        <div class="cs-stat">
+          <div class="cs-stat__n">+[X%]</div>
+          <div class="cs-stat__l">[What improved and over what timeframe]</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__n">−[X%]</div>
+          <div class="cs-stat__l">[What decreased and why that's good]</div>
+        </div>
+        <div class="cs-stat">
+          <div class="cs-stat__n">[X]</div>
+          <div class="cs-stat__l">[Third metric or timeframe]</div>
+        </div>
+      </div>
+
+      <div class="cs-prose">
+        <p>[Context behind the numbers — what changed downstream, business impact.]</p>
+      </div>
+
+      <figure class="cs-visual">
+        <div class="cs-placeholder">
+          <span class="cs-ph-tag">Results Screenshot</span>
+          <span class="cs-ph-title">[Analytics showing the uplift]</span>
+          <span class="cs-ph-hint">Before/after comparison preferred</span>
+        </div>
+      </figure>
+    </section>
+
+    <!-- REFLECTIONS -->
+    <section class="cs-section">
+      <span class="cs-label">Reflections</span>
+      <h2 class="cs-title">[Reflection headline]</h2>
+      <div class="cs-prose">
+        <h3>[Learning 1]</h3>
+        <p>[Specific, not generic. What this project changed about how you work.]</p>
+        <h3>[Learning 2]</h3>
+        <p>[What you'd do differently.]</p>
+        <p>[Closing line — the one thing that stuck.]</p>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="cs-footer">
+    <a href="/">← Back to work</a>
+    <a href="#">Next project →</a>
+  </footer>
 
 </body>
 </html>
@@ -510,41 +541,24 @@ The output is ONE file: `[project-name]-case-study.html`
 
 ---
 
-## Usage Notes
+## Component Quick Reference
 
-### Fonts
-Pick two from Google Fonts that fit the tone. Examples:
-- Editorial/refined: `Playfair Display` (display) + `DM Sans` (body)
-- Modern/minimal: `Syne` (display) + `Instrument Sans` (body)
-- Bold/expressive: `Fraunces` (display) + `Plus Jakarta Sans` (body)
-- Technical: `Space Grotesk` is overused — try `IBM Plex Serif` + `Figtree` instead
+| Situation | Component class |
+|---|---|
+| Real image / screenshot | `<figure class="cs-visual"><img /></figure>` |
+| User will insert image | `<div class="cs-placeholder">` — be specific |
+| Diagram to be created | `<div class="cs-diagram-desc">` — describe it |
+| Visualizer output | Wrap in `<figure class="cs-visual">` |
+| 3 data points / findings | `<div class="cs-stats">` |
+| 2 data points | `<div class="cs-stats cs-stats--two">` |
+| Pull quote | `<blockquote class="cs-quote">` |
 
-### CSS Variables
-Override just the `:root` variables to fully retheme. The whole design adapts.
-Dark theme: flip `--bg: #0F0F0D`, `--surface: #1A1A18`, `--text: #F0EDE8`.
+## Stat number formatting
+- Change metrics: always include sign → `+48%` / `−22%`
+- Time: `2 wks` / `6 mo` / `3 days`
+- Counts: `7` / `100K+` / `1.5M`
+- Keep labels one line — short and plain
 
-### Stat Cards
-If there are no hard metrics, replace `.cs-stats` with a qualitative highlights list:
-```html
-<ul class="cs-highlights">
-  <li>[Qualitative signal 1]</li>
-  <li>[Qualitative signal 2]</li>
-</ul>
-```
-
-### Visualizer Placement
-Drop Visualizer output inside `.cs-visual` divs. The border-radius and border are
-already applied — the visual will slot in cleanly.
-
-### INSERT Placeholders
-Every `<div class="cs-insert">` is a placeholder. Replace with:
-```html
-<figure>
-  <img src="your-image.png" alt="Description" />
-  <figcaption>Caption text</figcaption>
-</figure>
-```
-
-### Removing Optional Sections
-Research & Discovery is wrapped in its own `<section>` — delete it entirely if not applicable.
-Stat cards block can be removed and replaced with prose if no metrics exist.
+## Placeholder specificity rule
+❌ Never: *"Insert image here"*
+✅ Always: *"Hotjar scroll map showing where users dropped off during the sign-up flow"*

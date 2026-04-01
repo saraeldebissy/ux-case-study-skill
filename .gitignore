@@ -1,0 +1,9 @@
+# Personal files — do not commit
+skill/references/feedback-log.md
+
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+*.bak
